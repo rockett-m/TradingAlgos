@@ -14,7 +14,10 @@ class stock_data:
         self.ticker = ticker.upper()
         self.data_new_to_old = pd.DataFrame()
         self.data_old_to_new = pd.DataFrame()
+        self.open_price = 0.0
+        self.close_price = 0.0
         self.yearly_return = 0.0
+        self.yearly_return_pct = 0.0
 
     def read_data(self):
         print(f'\nReading data for {self.ticker = }')
@@ -28,6 +31,9 @@ class stock_data:
                 print(self.data_old_to_new.tail())
             # reverse the data and reindex the dataframe
             self.data_old_to_new = self.data_new_to_old[::-1].reset_index(drop=True)
+
+            self.open_price = float(self.data_old_to_new['Open'][0].strip('$'))
+            self.close_price = float(self.data_old_to_new['Close/Last'][len(self.data_old_to_new) - 1].strip('$'))
 
         else:
             print('No data found. Error')

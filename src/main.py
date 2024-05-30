@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os, sys
 # scraping
-import requests
 import yfinance as yf
 from bs4 import BeautifulSoup
 # data manipulation
@@ -9,7 +8,6 @@ import pandas as pd
 import numpy as np
 # data visualization
 import matplotlib.pyplot as plt
-import inspect
 from collections import OrderedDict
 
 from stock import stock_data
@@ -35,6 +33,17 @@ if __name__ == '__main__':
             if ticker not in tickers:
                 tickers[ticker] = f'{root}/{file}'
 
+    df_results = pd.DataFrame(columns=['ticker',
+                                        'open_price ($)',
+                                        'close_price ($)',
+                                        'one_year ($)',
+                                        'one_year (%)',
+                                        'buy_open_sell_close ($)',
+                                        'buy_open_sell_close (%)',
+                                        'buy_close_sell_open ($)',
+                                        'buy_close_sell_open (%)'])
+
+    idx = 0
     for ticker, path in tickers.items():
         # print(f'{ticker = }')
 
@@ -42,21 +51,45 @@ if __name__ == '__main__':
 
         stock.read_data()
 
-        stock.yearly_return = buy_and_hold_one_year(stock)
+        one_year, one_year_pct = buy_and_hold_one_year(stock)
 
-        buy_at_open_sell_at_close(stock)
+        buy_open_sell_close, buy_open_sell_close_pct = buy_at_open_sell_at_close(stock)
 
-        buy_at_close_sell_at_open(stock)
+        buy_close_sell_open, buy_close_sell_open_pct = buy_at_close_sell_at_open(stock)
 
-    # msft = stock_data('MSFT')
+        # for results dataframe
+        open_price, close_price = stock.open_price, stock.close_price
 
-    # msft.read_data()
+        one_year, one_year_pct = stock.yearly_return, stock.yearly_return_pct
 
-    # # backtesting.py : data/MSFT_1Y_Data.csv
-    # msft.yearly_return = buy_and_hold_one_year(msft)
+        df_results.loc[idx] = [ticker,
+                                    open_price,
+                                    close_price,
+                                    one_year,
+                                    one_year_pct,
+                                    buy_open_sell_close,
+                                    buy_open_sell_close_pct,
+                                    buy_close_sell_open,
+                                    buy_close_sell_open_pct]
+        idx += 1
 
-    # buy_at_open_sell_at_close(msft)
-    # buy_at_close_sell_at_open(msft)
+    # show dataframe with results
+    print(df_results)
 
+    # plot the results
+    fig, ax = plt.subplots()
+    ax.plot(df_results['ticker'], df_results['one_year (%)'], label='Buy and Hold')
+    ax.plot(df_results['ticker'], df_results['buy_open_sell_close (%)'], label='Buy at Open, Sell at Close')
+    ax.plot(df_results['ticker'], df_results['buy_close_sell_open (%)'], label='Buy at Close, Sell at Open')
+    ax.set_xlabel('Ticker')
+    ax.set_ylabel('Return (%)')
+    ax.set_title('Stock Returns')
+    ax.legend()
+    plt.show()
 
-    # from algo.py
+    # save graph to file
+    fig.savefig('results/stock_returns.png')
+
+    # save the results to a csv file
+    df_results = df_results.round(2)
+    df_results.to_csv('results/results.csv')

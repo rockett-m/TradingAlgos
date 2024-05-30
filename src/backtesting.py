@@ -14,7 +14,7 @@ import inspect
 # uses stock class object from stock.py
 # which has parsed the data from the csv file in the data folder
 
-def buy_and_hold_one_year(stock) -> float:
+def buy_and_hold_one_year(stock) -> list[float, float]:
     '''
     Calculates the total return for a buy-and-hold strategy over one year.
 
@@ -50,12 +50,15 @@ def buy_and_hold_one_year(stock) -> float:
     print(f'\nStrategy: {inspect.currentframe().f_code.co_name}')
     # print the total return
     print(f'One year return: {prefix}{"{:.2f}".format(total)}')
-    annual_returns_percent(stock, total_return)
+    total_return_pct = annual_returns_percent(stock, total_return)
 
-    return total_return
+    stock.yearly_return = total_return
+    stock.yearly_return_pct = total_return_pct
+
+    return total_return, total_return_pct
 
 
-def buy_at_open_sell_at_close(stock) -> float:
+def buy_at_open_sell_at_close(stock) -> list[float, float]:
     '''
     Calculates the total return by buying at the open price and
         selling at the close price.
@@ -89,12 +92,12 @@ def buy_at_open_sell_at_close(stock) -> float:
 
     print(f'Strategy: {inspect.currentframe().f_code.co_name}')
     print(f'One year return: {prefix}{"{:.2f}".format(total)}')
-    annual_returns_percent(stock, total_return)
+    total_return_pct = annual_returns_percent(stock, total_return)
 
-    return total_return
+    return total_return, total_return_pct
 
 
-def buy_at_close_sell_at_open(stock) -> float:
+def buy_at_close_sell_at_open(stock) -> list[float, float]:
     '''
     Calculates the total return by buying at the close price and
         selling at the open price for each row in the stock data.
@@ -137,9 +140,9 @@ def buy_at_close_sell_at_open(stock) -> float:
 
     print(f'Strategy: {inspect.currentframe().f_code.co_name}')
     print(f'One year return: {prefix}{"{:.2f}".format(total)}')
-    annual_returns_percent(stock, total_return)
+    total_return_pct = annual_returns_percent(stock, total_return)
 
-    return total_return
+    return total_return, total_return_pct
 
 
 def annual_returns_percent(stock, profit) -> float:
