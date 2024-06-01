@@ -7,4 +7,4 @@ trading_env           *  /opt/homebrew/Caskroom/miniconda/base/envs/trading_env
 conda activate trading_env
 
 
-python3 src/algo.py
+python3 src/main.py
