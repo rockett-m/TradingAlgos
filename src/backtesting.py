@@ -160,3 +160,32 @@ def annual_returns_percent(stock, profit) -> float:
     print(f'Annual returns percentage: {"{:.2f}%".format(annual_returns_percent)}\n')
 
     return annual_returns_percent
+
+
+def delta_high_low_yearly(stock) -> float:
+    '''
+    Calculate the yearly high and low delta.
+    Perfect trading on one trade a day could get this return but it is not realistic.
+    The low would have to come before the high every day, for instance.
+
+    Args:
+        stock (DataFrame): The stock data containing 'High' and 'Low' columns.
+
+    Returns:
+        float: The total return calculated by subtracting the low price from
+                the high price for each day in the stock data.
+    '''
+    total_return = 0.0
+
+    for idx, row in stock.data_old_to_new.iterrows():
+        # print(f'{idx = }; {row = }')
+        high = float(row['High'].strip('$'))
+        low = float(row['Low'].strip('$'))
+
+        total_return += (high - low)
+
+    print(f'Strategy: {inspect.currentframe().f_code.co_name}')
+    print(f'One year return: ${"{:.2f}".format(total_return)}')
+    total_return_pct = annual_returns_percent(stock, total_return)
+
+    return total_return, total_return_pct

@@ -13,6 +13,8 @@ from stock import stock_data
 from backtesting import buy_and_hold_one_year
 from backtesting import buy_at_open_sell_at_close
 from backtesting import buy_at_close_sell_at_open
+from backtesting import delta_high_low_yearly
+
 
 from create_results import create_graph, create_csv
 
@@ -53,6 +55,10 @@ if __name__ == '__main__':
         buy_open_sell_close, buy_open_sell_close_pct = buy_at_open_sell_at_close(stock)
 
         buy_close_sell_open, buy_close_sell_open_pct = buy_at_close_sell_at_open(stock)
+
+        # unrealistic to buy at the low and sell at the high each day
+        # not including in charts / results csv
+        delta_high_low = delta_high_low_yearly(stock)
 
         # for results dataframe
         open_price, close_price = stock.open_price, stock.close_price
