@@ -13,8 +13,8 @@ see backtesting 1 year returns on Nasdaq pricing data for big tech stocks
 `python3 src/main.py`
 
 
-see live data from Yahoo Finance
+get live screening data from Yahoo Finance
 
 'most-active', 'gainers', 'losers', 'trending-tickers'
 
-`python3 src/scrape_live_stocks.py`
+`python3 src/scrape_live_stocks.py [-d] [-v]`
