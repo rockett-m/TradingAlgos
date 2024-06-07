@@ -2,7 +2,7 @@
 
 #### Create and run conda environment
 
-`conda env create -f trading_env.yml`
+`conda env create -f trading_env.yml`  
 `conda activate trading_env`
 
 #### See backtesting 1 year returns on Nasdaq pricing data for big tech stocks
