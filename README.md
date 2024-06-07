@@ -1,20 +1,11 @@
-# TradingAlgos
+## TradingAlgos
 
-`conda env list`
-
-trading_env           *  /opt/homebrew/Caskroom/miniconda/base/envs/trading_env
-
+#### Create and run conda environment
+`conda env create -f trading_env.yml`  
 `conda activate trading_env`
 
+#### see backtesting 1 year returns on Nasdaq pricing data for big tech stocks
+`python3 src/backtesting.py`
 
-
-see backtesting 1 year returns on Nasdaq pricing data for big tech stocks
-
-`python3 src/main.py`
-
-
-get live screening data from Yahoo Finance
-
-'most-active', 'gainers', 'losers', 'trending-tickers'
-
+#### get live screening data from Yahoo Finance and generate watchlists of top 5 in each category of 'most-active', 'gainers', 'losers', 'trending-tickers'
 `python3 src/scrape_live_stocks.py [-d] [-v]`
