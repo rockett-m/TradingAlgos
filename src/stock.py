@@ -1,7 +1,7 @@
+#!/usr/bin/env python3
 """
 This module contains the StockData class to represent stock data for a specific ticker.
 """
-
 import os
 import pandas as pd
 

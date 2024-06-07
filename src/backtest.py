@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 This module contains functions to backtest different trading strategies.
 """
@@ -23,6 +24,7 @@ An example of Microsoft's 1 year data can be found here:
 https://www.nasdaq.com/market-activity/stocks/msft/historical?
     page=1&rows_per_page=10&timeline=y1)
 """
+
 if __name__ == '__main__':
 
     # gather all the tickers from the data folder

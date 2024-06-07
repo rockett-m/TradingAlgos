@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 This module contains functions to scrape live stocks from Yahoo Finance.
 It uses the aiohttp library to make asynchronous requests to the Yahoo Finance website.
@@ -146,7 +147,7 @@ def create_table(frame, dataframe, style):
         table.column(column, width=100)
 
     # Apply tags for specific columns
-    for i, row in enumerate(dataframe.itertuples(index=False)):
+    for _, row in enumerate(dataframe.itertuples(index=False)):
         tags = []
         if style == 'gainers' and row._4.startswith('+'):
             tags.append('gainers_change')

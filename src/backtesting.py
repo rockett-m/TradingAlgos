@@ -168,7 +168,7 @@ def delta_high_low_yearly(stock) -> float:
     '''
     total_return = 0.0
 
-    for idx, row in stock.data_old_to_new.iterrows():
+    for _, row in stock.data_old_to_new.iterrows():
         # print(f'{idx = }; {row = }')
         high = float(row['High'].strip('$'))
         low = float(row['Low'].strip('$'))
