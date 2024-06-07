@@ -1,26 +1,31 @@
-#!/usr/bin/env python3
+"""
+This module contains functions to scrape live stocks from Yahoo Finance.
+It uses the aiohttp library to make asynchronous requests to the Yahoo Finance website.
+After the parallel requests are completed, the data is saved to CSV files and displayed in a tkinter window.
+"""
 
-import os, sys
+import os
 import time
-import tkinter
-from tkinter import ttk
-from matplotlib import pyplot as plt
-import yfinance as yf
-from bs4 import BeautifulSoup
-import requests
-import selenium as sel
-import pandas as pd
-from io import StringIO
 from datetime import datetime
-import aiohttp
-import asyncio
-from collections import OrderedDict
 import argparse
+from collections import OrderedDict
 import math
 import logging
+from io import StringIO
+import asyncio
+import tkinter
+from tkinter import ttk
+import pandas as pd
+import aiohttp
+from bs4 import BeautifulSoup
+
+# future imports potentially
+# import yfinance as yf
+# import requests
+# import selenium as sel
 
 
-metrics = ['gainers',
+METRICS = ['gainers',
            'losers',
            'most-active',
            'trending-tickers']
@@ -29,9 +34,9 @@ metrics = ['gainers',
         #    'highest-open-interest' ]
 
 # status code, dataframe, runtime, filename
-metrics_dict = OrderedDict((metric, [int, pd.DataFrame, 0.0, __file__]) for metric in metrics)
+metrics_dict = OrderedDict((metric, [int, pd.DataFrame, 0.0, __file__]) for metric in METRICS)
 
-results_folder = 'results/yfinance'
+RESULTS_FOLDER = 'results/yfinance'
 
 
 def parse_args():
@@ -41,29 +46,55 @@ def parse_args():
     return parser.parse_args()
 
 
-# helper decorator to time functions
 def timeit(method):
+    """
+    A decorator that measures the runtime of an asynchronous method and logs the result.
+
+    Args:
+        method: The asynchronous method to be decorated.
+
+    Returns:
+        The decorated method.
+
+    Example usage:
+        @timeit
+        async def my_async_method():
+            # code goes here
+    """
     async def wrapper(*args):
-        metric = args[1]
-        logging.debug(f'{method.__name__} for {metric} started...\n')
+        category = args[1]
+        logging.debug(f'{method.__name__} for {category} started...\n')
 
         start = time.time()
         result = await method(*args)
         finish = time.time()
         runtime = round(finish - start, 3)
 
-        if metrics_dict[metric][0] != 200:
-            logging.error(f'Error: {metric} data not found')
+        if metrics_dict[category][0] != 200:
+            logging.error(f'Error: {category} data not found')
             return result
 
-        metrics_dict[metric][2] = runtime
+        metrics_dict[category][2] = runtime
         return result
     return wrapper
 
 
-# time this
 @timeit
 async def scrape_live_stocks(session, metric):
+    """
+    Scrapes live stocks data from Yahoo Finance for a given metric.
+
+    Args:
+        session (aiohttp.ClientSession): The aiohttp client session.
+        metric (str): The metric for which to scrape stocks data.
+
+    Returns:
+        None: If the response status is not 200.
+        pandas.DataFrame: The scraped stocks data as a pandas DataFrame.
+
+    Raises:
+        None.
+    """
     # print(f'Attempting to scrape {metric} stocks...\n')
 
     website = f'https://finance.yahoo.com/{metric}/'
@@ -71,31 +102,43 @@ async def scrape_live_stocks(session, metric):
     async with session.get(website) as response:
         metrics_dict[metric][0] = response.status
 
-        if response.status != 200: return
+        if response.status != 200:
+            return
 
         text = await response.text()
         soup = BeautifulSoup(text, 'html.parser')
         # soup.prettify()
 
         # convert the data to a pandas dataframe
-        df = pd.read_html(StringIO(str(soup)))[0]
-        metrics_dict[metric][1] = df
+        dataf = pd.read_html(StringIO(str(soup)))[0]
+        metrics_dict[metric][1] = dataf
 
         # convert to csv with timestamp
         timestamp = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
-        filename = f'{results_folder}/{metric}_{timestamp}.csv'
+        filename = f'{RESULTS_FOLDER}/{metric}_{timestamp}.csv'
         # overwrite of same tickers won't be an issue due to unique timestamps
-        df.to_csv(filename, index=False)
+        dataf.to_csv(filename, index=False)
         metrics_dict[metric][3] = filename
 
 
 async def scrape_stocks():
     async with aiohttp.ClientSession() as session:
-        operations = [scrape_live_stocks(session, metric) for metric in metrics]
+        operations = [scrape_live_stocks(session, metric) for metric in METRICS]
         await asyncio.gather(*operations)
 
 
 def create_table(frame, dataframe, style):
+    """
+    Create a table with the given dataframe and style.
+
+    Args:
+        frame (tkinter.Frame): The frame to place the table in.
+        dataframe (pd.DataFrame): The dataframe to display.
+        style (str): The style of the table.
+
+    Returns:
+        ttk.Treeview: The table widget.
+    """
     table = ttk.Treeview(frame, show="headings", selectmode="browse")
     table["columns"] = list(dataframe.columns)
     for column in dataframe.columns:
@@ -129,7 +172,8 @@ if __name__ == '__main__':
     start_program = time.time()
     args = parse_args()
     # create log file in results dir with current timestamp
-    log_filename = f'{results_folder}/scrape_live_stocks_{datetime.now().strftime("%Y-%m-%d_%H:%M:%S")}.log'
+    log_filename = f'''{RESULTS_FOLDER}/scrape_live_stocks_{datetime.now()
+                        .strftime("%Y-%m-%d_%H:%M:%S")}.log'''
 
     # Configure logging to file and console
     logging.basicConfig(
@@ -143,8 +187,8 @@ if __name__ == '__main__':
     )
     logging.info(f'\nScraping live stock screeners from Yahoo Finance in parallel...\n')
 
-    os.makedirs(results_folder, exist_ok=True)
-    logging.debug(f'{results_folder = }\n')
+    os.makedirs(RESULTS_FOLDER, exist_ok=True)
+    logging.debug(f'{RESULTS_FOLDER = }\n')
 
     # parent function
     time_start = time.time()
@@ -166,12 +210,12 @@ if __name__ == '__main__':
     logging.debug(f'Time taken to scrape all metrics: {round(time_end - time_start, 3)} sec\n')
 
     # to print the dataframes and see the top rows of each metric
-    num_rows = 5
+    NUM_ROWS = 5
     for metric, value in metrics_dict.items():
         df = value[1]
         # print the top 5 rows of each metric
-        logging.info(f'{metric = }\n{df.head(num_rows)}\n')
-        print(f'{metric = }\n{df.head(num_rows)}\n')
+        logging.info(f'{metric = }\n{df.head(NUM_ROWS)}\n')
+        print(f'{metric = }\n{df.head(NUM_ROWS)}\n')
 
     end_program = time.time()
     logging.info(f'Minimum refresh rate: {math.ceil(end_program - start_program)} sec\n')
@@ -190,16 +234,16 @@ if __name__ == '__main__':
         notebook.pack(fill='both', expand=True)
 
         for title, df in zip(metrics_dict.keys(), [value[1] for value in metrics_dict.values()]):
-            frame = ttk.Frame(notebook)
-            notebook.add(frame, text=title)
-            style = 'default'
+            ntbk_frame = ttk.Frame(notebook)
+            notebook.add(ntbk_frame, text=title)
+            STYLE = 'default'
             if title == 'Gainers':
-                style = 'gainers'
+                STYLE = 'gainers'
             elif title == 'Losers':
-                style = 'losers'
+                STYLE = 'losers'
             elif title == 'Most Active':
-                style = 'most_active'
-            table = create_table(frame, df.head(), style=style)
+                STYLE = 'most_active'
+            table = create_table(ntbk_frame, df.head(), STYLE)
             table.pack(fill='both', expand=True)
 
         root.mainloop()

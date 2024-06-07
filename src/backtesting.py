@@ -1,14 +1,3 @@
-#!/usr/bin/env python3
-import os, sys
-# scraping
-import requests
-import yfinance as yf
-from bs4 import BeautifulSoup
-# data manipulation
-import pandas as pd
-import numpy as np
-# data visualization
-import matplotlib.pyplot as plt
 import inspect
 
 # uses stock class object from stock.py
@@ -65,7 +54,8 @@ def buy_at_open_sell_at_close(stock) -> list[float, float]:
 
     Args:
         stock: The stock data.
-        data/MSFT_1Y_Data.csv (from https://www.nasdaq.com/market-activity/stocks/msft/historical?page=1&rows_per_page=10&timeline=y1)
+        data/MSFT_1Y_Data.csv (from https://www.nasdaq.com/market-activity/stocks/
+                                msft/historical?page=1&rows_per_page=10&timeline=y1)
 
     Returns:
         The total return as a float.
@@ -105,7 +95,8 @@ def buy_at_close_sell_at_open(stock) -> list[float, float]:
     Args:
         stock (DataFrame): The stock data containing 'Open' and
             'Close/Last' columns.
-            data/MSFT_1Y_Data.csv (from https://www.nasdaq.com/market-activity/stocks/msft/historical?page=1&rows_per_page=10&timeline=y1)
+            data/MSFT_1Y_Data.csv (from https://www.nasdaq.com/market-activity/stocks
+                                /msft/historical?page=1&rows_per_page=10&timeline=y1)
 
     Returns:
         float: The total return calculated by subtracting the
@@ -156,10 +147,10 @@ def annual_returns_percent(stock, profit) -> float:
     Returns:
         float: The annual returns percentage.
     '''
-    annual_returns_percent = (profit / float(stock.data_old_to_new['Open'][0].strip('$'))) * 100
-    print(f'Annual returns percentage: {"{:.2f}%".format(annual_returns_percent)}\n')
+    annual_returns_pct = (profit / float(stock.data_old_to_new['Open'][0].strip('$'))) * 100
+    print(f'Annual returns percentage: {"{:.2f}%".format(annual_returns_pct)}\n')
 
-    return annual_returns_percent
+    return annual_returns_pct
 
 
 def delta_high_low_yearly(stock) -> float:

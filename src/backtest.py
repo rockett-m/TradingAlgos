@@ -1,32 +1,31 @@
-#!/usr/bin/env python3
-import os, sys
-# scraping
-import yfinance as yf
-from bs4 import BeautifulSoup
-# data manipulation
-import pandas as pd
-# data visualization
+"""
+This module contains functions to backtest different trading strategies.
+"""
+import os
 from collections import OrderedDict
+import pandas as pd
 
-from stock import stock_data
+from stock import StockData
 
 from backtesting import buy_and_hold_one_year
 from backtesting import buy_at_open_sell_at_close
 from backtesting import buy_at_close_sell_at_open
 from backtesting import delta_high_low_yearly
 
-
 from create_results import create_graph, create_csv
 
 
+os.makedirs('results/backtesting', exist_ok=True)
+
+"""
+The Nasdaq 1 year data is stored in the data folder in CSV files.
+An example of Microsoft's 1 year data can be found here:
+https://www.nasdaq.com/market-activity/stocks/msft/historical?
+    page=1&rows_per_page=10&timeline=y1)
+"""
 if __name__ == '__main__':
-    # from https://www.nasdaq.com/market-activity/stocks/msft/historical?page=1&rows_per_page=10&timeline=y1)
-    # order is latest data first and oldest data last
 
     # gather all the tickers from the data folder
-
-    os.makedirs('results/backtesting', exist_ok=True)
-
     tickers = OrderedDict()
     for root, dirs, files in os.walk('data/nasdaq_1yr'):
         for file in files:
@@ -49,7 +48,7 @@ if __name__ == '__main__':
     for idx, ticker in enumerate(tickers.keys()):
         # print(f'{ticker = }')
 
-        stock = stock_data(ticker)
+        stock = StockData(ticker)
 
         stock.read_data()
 
