@@ -1,0 +1,64 @@
+2024-06-05 18:01:12,266 - INFO - 
+Scraping live stock screeners from Yahoo Finance in parallel...
+
+2024-06-05 18:01:12,266 - DEBUG - results_folder = 'results/yfinance'
+
+2024-06-05 18:01:12,266 - DEBUG - Using selector: KqueueSelector
+2024-06-05 18:01:12,266 - DEBUG - scrape_live_stocks for gainers started...
+
+2024-06-05 18:01:12,279 - DEBUG - scrape_live_stocks for losers started...
+
+2024-06-05 18:01:12,279 - DEBUG - scrape_live_stocks for most-active started...
+
+2024-06-05 18:01:12,279 - DEBUG - scrape_live_stocks for trending-tickers started...
+
+2024-06-05 18:01:13,773 - DEBUG - metric: GAINERS took 1.506 sec
+2024-06-05 18:01:13,773 - INFO - filename = 'results/yfinance/gainers_2024-06-05_18:01:13.csv' generated
+
+2024-06-05 18:01:13,773 - DEBUG - metric: LOSERS took 0.442 sec
+2024-06-05 18:01:13,773 - INFO - filename = 'results/yfinance/losers_2024-06-05_18:01:12.csv' generated
+
+2024-06-05 18:01:13,773 - DEBUG - metric: MOST-ACTIVE took 0.899 sec
+2024-06-05 18:01:13,773 - INFO - filename = 'results/yfinance/most-active_2024-06-05_18:01:13.csv' generated
+
+2024-06-05 18:01:13,773 - DEBUG - metric: TRENDING-TICKERS took 0.958 sec
+2024-06-05 18:01:13,773 - INFO - filename = 'results/yfinance/trending-tickers_2024-06-05_18:01:13.csv' generated
+
+2024-06-05 18:01:13,773 - DEBUG - Time taken to scrape all metrics: 1.507 sec
+
+2024-06-05 18:01:13,776 - INFO - metric = 'gainers'
+  Symbol                               Name  Price (Intraday)  Change % Change   Volume Avg Vol (3 month) Market Cap  PE Ratio (TTM)  52 Week Range
+0     KD             Kyndryl Holdings, Inc.             26.55    5.78  +27.83%   7.868M            1.632M     6.109B             NaN            NaN
+1   ELAN  Elanco Animal Health Incorporated             16.89    3.37  +24.93%  19.349M            4.353M     8.347B             NaN            NaN
+2   MYGN              Myriad Genetics, Inc.             23.95    4.17  +21.08%   2.588M            690119     2.167B             NaN            NaN
+3    LPX      Louisiana-Pacific Corporation             88.14   15.17  +20.79%   3.968M            1.055M     6.317B           35.83            NaN
+4   GMED               Globus Medical, Inc.             61.73   10.37  +20.19%   6.532M            1.149M     8.337B          114.31            NaN
+
+2024-06-05 18:01:13,780 - INFO - metric = 'losers'
+  Symbol                                          Name  Price (Intraday)  Change % Change  Volume Avg Vol (3 month) Market Cap  PE Ratio (TTM)  52 Week Range
+0     ZK  ZEEKR Intelligent Technology Holding Limited             23.84   -1.83   -7.13%  657296            1.739M     5.902B             NaN            NaN
+1   BF-B                      Brown-Forman Corporation             43.04   -2.70   -5.90%  5.635M            1.995M    20.334B           21.41            NaN
+2   FIVN                                   Five9, Inc.             42.14   -2.62   -5.85%  3.327M            1.262M     3.113B             NaN            NaN
+3   BF-A                      Brown-Forman Corporation             43.28   -2.44   -5.34%  196015             58277    20.457B           21.53            NaN
+4   NICE                                     NICE Ltd.            161.78   -9.12   -5.34%  3.093M            479323    10.712B           29.15            NaN
+
+2024-06-05 18:01:13,784 - INFO - metric = 'most-active'
+  Symbol                                Name  Price (Intraday)  Change % Change   Volume Avg Vol (3 month) Market Cap  PE Ratio (TTM)  52 Week Range
+0    HPE  Hewlett Packard Enterprise Company             19.48    1.88  +10.68%  85.697M           15.113M    25.321B           13.43            NaN
+1    GME                      GameStop Corp.             31.57    5.07  +19.13%  69.083M            27.15M    11.087B         1578.50            NaN
+2   MARA     Marathon Digital Holdings, Inc.             21.07    0.55   +2.68%   62.54M           49.548M     5.958B           13.17            NaN
+3   PLUG                     Plug Power Inc.              3.01   -0.21   -6.52%  57.714M           33.834M     2.235B             NaN            NaN
+4    AMD        Advanced Micro Devices, Inc.            166.17    6.18   +3.86%  59.621M           59.377M   268.582B          240.83            NaN
+
+2024-06-05 18:01:13,788 - INFO - metric = 'trending-tickers'
+  Symbol                      Name  Last Price Market Time  Change  % Change   Volume Market Cap  Intraday High/Low  52 Week Range  Day Chart
+0   NVDA        NVIDIA Corporation     1224.40  4:00PM EDT   60.03    +5.16%   51.51M     3.012T                NaN            NaN        NaN
+1   LULU  Lululemon Athletica Inc.      308.27  4:00PM EDT    1.49    +0.49%   4.962M    38.844B                NaN            NaN        NaN
+2   ASNS    Actelis Networks, Inc.        3.72  4:00PM EDT    3.25  +691.49%  84.139M    12.479M                NaN            NaN        NaN
+3    ARM          Arm Holdings plc      136.67  4:00PM EDT   10.81    +8.59%  12.364M   143.208B                NaN            NaN        NaN
+4   META      Meta Platforms, Inc.      495.06  4:00PM EDT   18.07    +3.79%  15.605M     1.256T                NaN            NaN        NaN
+
+2024-06-05 18:01:13,790 - INFO - Minimum refresh rate: 2 sec
+
+2024-06-05 18:01:13,790 - INFO - Log file: results/yfinance/scrape_live_stocks_2024-06-05_18:01:12.log
+

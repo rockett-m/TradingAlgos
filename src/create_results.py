@@ -17,7 +17,7 @@ def create_graph(df_results, save=True, print_results=False):
     plt.show()
 
     # save the plot
-    if save: fig.savefig('results/stock_returns.png')
+    if save: fig.savefig('results/backtesting/stock_returns_1year.png')
 
 
 def create_csv(df_results, save=True, print_results=True):
@@ -28,4 +28,4 @@ def create_csv(df_results, save=True, print_results=True):
     if print_results: print(df_results)
 
     # save the results to a csv file
-    if save: df_results.to_csv('results/results.csv')
+    if save: df_results.to_csv('results/backtesting/results.csv')

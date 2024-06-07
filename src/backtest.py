@@ -24,6 +24,9 @@ if __name__ == '__main__':
     # order is latest data first and oldest data last
 
     # gather all the tickers from the data folder
+
+    os.makedirs('results/backtesting', exist_ok=True)
+
     tickers = OrderedDict()
     for root, dirs, files in os.walk('data/nasdaq_1yr'):
         for file in files:
