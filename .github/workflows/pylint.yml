@@ -4,21 +4,41 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
         python-version: ["3.12"]
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+
+    - name: Install Miniconda
       run: |
-        python -m pip install --upgrade pip
-        pip install pylint
-    - name: Analyzing the code with pylint
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -O miniconda.sh
+        bash miniconda.sh -b -p $HOME/miniconda
+        echo "$HOME/miniconda/bin" >> $GITHUB_PATH
+        source $HOME/miniconda/etc/profile.d/conda.sh
+        conda init zsh
+
+    - name: Set up Conda environment
       run: |
+        source $HOME/miniconda/etc/profile.d/conda.sh
+        conda config --add channels conda-forge
+        conda env create -f trading_env.yml
+
+    - name: Activate Conda and install additional dependencies
+      run: |
+        source $HOME/miniconda/etc/profile.d/conda.sh
+        conda activate trading_env
+        conda install -y flake8 pytest mypy black isort pre-commit sphinx tox
+        pip install pytest-cov sphinx-rtd-theme
+
+    - name: Analyze the code with Pylint
+      run: |
+        source $HOME/miniconda/etc/profile.d/conda.sh
+        conda activate trading_env
         pylint $(git ls-files '*.py')
