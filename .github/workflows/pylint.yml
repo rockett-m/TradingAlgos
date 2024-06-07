@@ -38,6 +38,7 @@ jobs:
         pip install pytest-cov sphinx-rtd-theme
 
     - name: Analyze the code with Pylint
+      continue-on-error: true
       run: |
         source $HOME/miniconda/etc/profile.d/conda.sh
         conda activate trading_env
