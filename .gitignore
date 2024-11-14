@@ -1,5 +1,10 @@
 *.DS_Store
+*.code-workspace
+
 __pycache__
+lock
+
+progress/
 results/yfinance/trending-tickers_2024-06-04*.csv
 results/yfinance/trending-tickers_2024-06-05_13*.csv
 results/yfinance/trending-tickers_2024-06-05_14*.csv
