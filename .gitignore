@@ -5,20 +5,5 @@ __pycache__
 lock
 
 progress/
-results/yfinance/trending-tickers_2024-06-04*.csv
-results/yfinance/trending-tickers_2024-06-05_13*.csv
-results/yfinance/trending-tickers_2024-06-05_14*.csv
-results/yfinance/trending-tickers_2024-06-05_15*.csv
-results/yfinance/trending-tickers_2024-06-05_16*.csv
-results/yfinance/trending-tickers_2024-06-05_17*
-results/yfinance/scrape_live_stocks_2024-06-05_16*
-results/yfinance/scrape_live_stocks_2024-06-05_17*
-results/yfinance/scrape_live_stocks_2024-06-05_17*
-results/yfinance/most-active_2024-06-04*
-results/yfinance/most-active_2024-06-05_16*
-results/yfinance/most-active_2024-06-05_17*
-results/yfinance/losers_2024-06-05_15*
-results/yfinance/losers_2024-06-05_16*
-results/yfinance/losers_2024-06-05_17*
-results/yfinance/gainers_2024-06-05_16*
-results/yfinance/gainers_2024-06-05_17*
+results/yfinance/*
+!results/yfinance/*2024-06-05_18:01*.csv

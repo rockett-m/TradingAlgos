@@ -2,21 +2,22 @@
 """
 This module contains functions to backtest different trading strategies.
 """
-import os
+import os, sys
 from collections import OrderedDict
 import pandas as pd
 
-from stock import StockData
+ROOT = os.path.abspath(os.path.dirname(os.path.join(__file__, "../../")))
+sys.path.append(ROOT)
 
+from stock import StockData
 from backtesting import buy_and_hold_one_year
 from backtesting import buy_at_open_sell_at_close
 from backtesting import buy_at_close_sell_at_open
 from backtesting import delta_high_low_yearly
+from create_scrape_results import create_graph, create_csv
 
-from create_results import create_graph, create_csv
-
-
-os.makedirs('results/backtesting', exist_ok=True)
+backtest_dir = os.path.join(ROOT, "results/backtesting")
+os.makedirs(backtest_dir, exist_ok=True)
 
 """
 The Nasdaq 1 year data is stored in the data folder in CSV files.
@@ -29,12 +30,13 @@ if __name__ == '__main__':
 
     # gather all the tickers from the data folder
     tickers = OrderedDict()
-    for root, dirs, files in os.walk('data/nasdaq_1yr'):
+    data_dir = os.path.join(ROOT, "data/nasdaq_1yr")
+    for root, dirs, files in os.walk(data_dir):
         for file in files:
             filename = file.split('_')
             ticker = filename[0]
             if ticker not in tickers:
-                tickers[ticker] = f'{root}/{file}'
+                tickers[ticker] = f"{root}/{file}"
 
     # dataframe to store the results with one ticker per row
     df_results = pd.DataFrame(columns=['ticker',

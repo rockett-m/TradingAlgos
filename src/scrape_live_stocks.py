@@ -3,9 +3,10 @@
 This module contains functions to scrape live stocks from Yahoo Finance.
 It uses the aiohttp library to make asynchronous requests to the Yahoo Finance website.
 After the parallel requests are completed, the data is saved to CSV files and displayed in a tkinter window.
+(trading_env) python3 -m src.scrape_live_stocks
 """
 
-import os
+import os, sys
 import time
 from datetime import datetime
 import argparse
@@ -20,10 +21,19 @@ import pandas as pd
 import aiohttp
 from bs4 import BeautifulSoup
 
+ROOT = os.path.abspath(os.path.dirname(os.path.join(__file__, "../../")))
+sys.path.append(ROOT)
+
+from utils.utils import path_check
 # future imports potentially
 # import yfinance as yf
 # import requests
 # import selenium as sel
+
+RESULTS_FOLDER = os.path.join(ROOT, "results/yfinance")
+os.makedirs(RESULTS_FOLDER, exist_ok=True)
+for directory in [ROOT, RESULTS_FOLDER]:
+    path_check(directory)
 
 
 METRICS = ['gainers',
@@ -36,8 +46,6 @@ METRICS = ['gainers',
 
 # status code, dataframe, runtime, filename
 metrics_dict = OrderedDict((metric, [int, pd.DataFrame, 0.0, __file__]) for metric in METRICS)
-
-RESULTS_FOLDER = 'results/yfinance'
 
 
 def parse_args():
@@ -64,7 +72,7 @@ def timeit(method):
     """
     async def wrapper(*args):
         category = args[1]
-        logging.debug(f'{method.__name__} for {category} started...\n')
+        logging.debug("%s for %s started...\n", method.__name__, category)
 
         start = time.time()
         result = await method(*args)
@@ -72,7 +80,7 @@ def timeit(method):
         runtime = round(finish - start, 3)
 
         if metrics_dict[category][0] != 200:
-            logging.error(f'Error: {category} data not found')
+            logging.error("Error: %s data not found", category)
             return result
 
         metrics_dict[category][2] = runtime
@@ -81,7 +89,7 @@ def timeit(method):
 
 
 @timeit
-async def scrape_live_stocks(session, metric):
+async def scrape_live_stocks(session, metric: str):
     """
     Scrapes live stocks data from Yahoo Finance for a given metric.
 
@@ -98,12 +106,13 @@ async def scrape_live_stocks(session, metric):
     """
     # print(f'Attempting to scrape {metric} stocks...\n')
 
-    website = f'https://finance.yahoo.com/{metric}/'
+    website = f"https://finance.yahoo.com/{metric}/"
 
     async with session.get(website) as response:
         metrics_dict[metric][0] = response.status
 
         if response.status != 200:
+            print(f"\nIs live streaming available now?\n\thttp get {response.status = }")
             return
 
         text = await response.text()
@@ -115,11 +124,11 @@ async def scrape_live_stocks(session, metric):
         metrics_dict[metric][1] = dataf
 
         # convert to csv with timestamp
-        timestamp = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
-        filename = f'{RESULTS_FOLDER}/{metric}_{timestamp}.csv'
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+        file_name = os.path.join(RESULTS_FOLDER, f"{metric}_{timestamp}.csv")
         # overwrite of same tickers won't be an issue due to unique timestamps
-        dataf.to_csv(filename, index=False)
-        metrics_dict[metric][3] = filename
+        dataf.to_csv(file_name, index=False)
+        metrics_dict[metric][3] = file_name
 
 
 async def scrape_stocks():
@@ -149,9 +158,9 @@ def create_table(frame, dataframe, style):
     # Apply tags for specific columns
     for _, row in enumerate(dataframe.itertuples(index=False)):
         tags = []
-        if style == 'gainers' and row._4.startswith('+'):
+        if style == 'gainers' and row.startswith('+'):
             tags.append('gainers_change')
-        if style == 'losers' and row._4.startswith('-'):
+        if style == 'losers' and row.startswith('-'):
             tags.append('losers_change')
         if style == 'most_active':
             tags.append('most_active_volume')
@@ -172,9 +181,10 @@ if __name__ == '__main__':
 
     start_program = time.time()
     args = parse_args()
+
     # create log file in results dir with current timestamp
-    log_filename = f'''{RESULTS_FOLDER}/scrape_live_stocks_{datetime.now()
-                        .strftime("%Y-%m-%d_%H:%M:%S")}.log'''
+    log_filename = f"""{RESULTS_FOLDER}/scrape_live_stocks_{datetime.now()
+                        .strftime("%Y-%m-%d_%H:%M:%S")}.log"""
 
     # Configure logging to file and console
     logging.basicConfig(
@@ -186,10 +196,8 @@ if __name__ == '__main__':
             # logging.StreamHandler()
         ]
     )
-    logging.info(f'\nScraping live stock screeners from Yahoo Finance in parallel...\n')
-
-    os.makedirs(RESULTS_FOLDER, exist_ok=True)
-    logging.debug(f'{RESULTS_FOLDER = }\n')
+    logging.info("\nScraping live stock screeners from Yahoo Finance in parallel...\n")
+    logging.debug("RESULTS_FOLDER = %s\n", RESULTS_FOLDER)
 
     # parent function
     time_start = time.time()
@@ -202,27 +210,29 @@ if __name__ == '__main__':
         runtime, filename = results[2], results[3]
 
         if results[0] != 200:
-            logging.error(f'Error: {metric} data not found')
+            logging.error("Error: %s data not found", metric)
             continue
 
-        logging.debug(f'metric: {metric.upper()} took {runtime} sec')
-        logging.info(f'{filename = } generated\n')
+        logging.debug("metric: %s took %s sec", metric.upper(), runtime)
+        logging.info("%s generated\n", filename)
 
-    logging.debug(f'Time taken to scrape all metrics: {round(time_end - time_start, 3)} sec\n')
+    logging.debug('Time taken to scrape all metrics: %s sec\n', round(time_end - time_start, 3))
 
     # to print the dataframes and see the top rows of each metric
     NUM_ROWS = 5
     for metric, value in metrics_dict.items():
         df = value[1]
         # print the top 5 rows of each metric
-        logging.info(f'{metric = }\n{df.head(NUM_ROWS)}\n')
-        print(f'{metric = }\n{df.head(NUM_ROWS)}\n')
+        if isinstance(df, pd.DataFrame):
+            df.head(NUM_ROWS)
+            logging.info("%s\n%s\n", metric, df.head(NUM_ROWS))
+            print("%s\n%s\n" % (metric, df.head(NUM_ROWS)))
 
     end_program = time.time()
-    logging.info(f'Minimum refresh rate: {math.ceil(end_program - start_program)} sec\n')
-
-    logging.info(f'Log file: {log_filename}\n')
-    print(f'Log file: {log_filename}\n')
+    logging.debug("Time taken to scrape all metrics %f sec\n", round(time_end - time_start, 3))
+    # logging.debug(f'Time taken to scrape all metrics: {round(time_end - time_start, 3)} sec\n')
+    logging.info("Log file: %s\n", log_filename)
+    print(f"\n{log_filename = }\n")
 
     if args.visualize:
         # open the csv files in the default csv viewer for each metric and all ~30 rows

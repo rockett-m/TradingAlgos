@@ -1,7 +1,11 @@
+#!/usr/bin/env python3
 """
 This module contains functions to create a graph and a CSV file with the results of the backtesting.
 """
+import os
 import matplotlib.pyplot as plt
+
+ROOT = os.path.abspath(os.path.dirname(os.path.join(__file__, "../../")))
 
 
 def create_graph(df_results, save=True, print_results=False):
@@ -27,7 +31,8 @@ def create_graph(df_results, save=True, print_results=False):
     plt.show()
 
     if save:
-        fig.savefig('results/backtesting/stock_returns_1year.png')
+        dest_fig = os.path.join(ROOT, "results/backtesting/stock_returns_1year.png")
+        fig.save(dest_fig)
 
 
 def create_csv(df_results, save=True, print_results=True):
@@ -45,4 +50,5 @@ def create_csv(df_results, save=True, print_results=True):
         print(df_results)
 
     if save:
-        df_results.to_csv('results/backtesting/results.csv')
+        dest_df_results = os.path.join(ROOT, "results/backtesting/results.csv")
+        df_results.to_csv(dest_df_results)

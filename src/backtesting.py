@@ -1,7 +1,11 @@
+import os, sys
 import inspect
 
 # uses stock class object from stock.py
 # which has parsed the data from the csv file in the data folder
+ROOT = os.path.abspath(os.path.dirname(os.path.join(__file__, "../../")))
+sys.path.append(ROOT)
+
 
 def buy_and_hold_one_year(stock) -> list[float, float]:
     '''
